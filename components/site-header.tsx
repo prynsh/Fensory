@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { WalletDisconnectButton, WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import '@solana/wallet-adapter-react-ui/styles.css';
+// import '@solana/wallet-adapter-react-ui/styles.css';
+import "../app/wallet.css"
 
 
 export function SiteHeader() {
@@ -31,7 +32,7 @@ export function SiteHeader() {
           className="mx-2 data-[orientation=vertical]:h-4"
         />
         <div className="flex w-full items-center justify-between">
-          <h1 className="text-base font-medium">Your Pools</h1>
+          <h1 className="sm:text-base font-medium text-xs ">Your Pools</h1>
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
@@ -44,8 +45,8 @@ export function SiteHeader() {
                 <Moon className="h-5 w-5" />
               )}
             </Button>
-            <WalletMultiButton />
-            <WalletDisconnectButton />
+            <WalletMultiButton/>
+            <WalletDisconnectButton  />
           </div>
         </div>
       </div>
