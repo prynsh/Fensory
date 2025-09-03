@@ -202,7 +202,7 @@ export function ApyHistoryChart({ poolId }: ApyHistoryProps) {
               cursor={false}
               content={<ChartTooltipContent 
                 hideLabel={false}
-                formatter={(value, name) => [
+                formatter={(value) => [
                   `${value}%`,
                   "APY"
                 ]}

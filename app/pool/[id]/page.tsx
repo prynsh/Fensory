@@ -83,7 +83,7 @@ export default function PoolDetailPage() {
         const chartJson: { status: string; data: ApiDataPoint[] } = await chartRes.json()
 
         // Find the pool with matching ID with the pool fetched from API
-        const pool = poolJson.data.find((p: any) => p.pool === poolId)
+        const pool = poolJson.data.find((p: PoolDetails) => p.pool === poolId)
         if (!pool) throw new Error("Pool not found")
 
         // Store pool details in state
