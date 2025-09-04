@@ -13,14 +13,17 @@ export interface Pool {
   apyMean30d?: number | null
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export function usePools() {
   const [pools, setPools] = useState<Pool[]>([])
   const [loading, setLoading] = useState(true)
 
+
   useEffect(() => {
     const fetchPools = async () => {
       try {
-        const res = await fetch("https://yields.llama.fi/pools")
+        const res = await fetch(`${API_BASE_URL}/pools`)
         const data = await res.json()
 
         const mapped: Pool[] = data.data

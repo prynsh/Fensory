@@ -1,8 +1,5 @@
 "use client"
 
-import * as React from "react"
-import { Box } from "@mui/material"
-import { PoolTable } from "./DataTable"
 import {
   Select,
   SelectContent,
@@ -11,145 +8,135 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from "./ui/button"
+import { FilterState } from "@/types/pool"
 
-interface Pool {
-  pool: string
-  project: string
-  category: string
-  symbol: string
-  tvlUsd: number
-  apy: number | null
-  prediction?: number | null
-  sigma?: number | null
-  apyMean30d?: number | null
+interface FiltersProps {
+  filters: FilterState;
+  categories: readonly string[];
+  onFilterChange: (key: keyof FilterState, value: string) => void;
+  onReset: () => void;
 }
 
-interface Props {
-  categories: string[]
-  pools: Pool[]
-  loading: boolean
-}
-
-export default function Filters({ categories, pools, loading }: Props) {
-  const [category, setCategory] = React.useState("Category")
-  const [tvlFilter, setTvlFilter] = React.useState("TVL")
-  const [apyFilter, setApyFilter] = React.useState("APY")
-  const [predictionFilter, setPredictionFilter] = React.useState("Prediction")
-  const [sigmaFilter, setSigmaFilter] = React.useState("Sigma")
-
-  const handleReset = () => {
-    setCategory("Category")
-    setTvlFilter("TVL")
-    setApyFilter("APY")
-    setPredictionFilter("Prediction")
-    setSigmaFilter("Sigma")
-  }
-
-  const filteredPools = pools.filter((p) => {
-    const inCategory = category === "Category" || p.category === category
-    const inTVL =
-      tvlFilter === "TVL" ||
-      (tvlFilter === "High" && p.tvlUsd > 1_000_000_000) ||
-      (tvlFilter === "Medium" && p.tvlUsd >= 100_000_000 && p.tvlUsd <= 1_000_000_000) ||
-      (tvlFilter === "Low" && p.tvlUsd < 100_000_000)
-    const inAPY =
-      apyFilter === "APY" ||
-      (apyFilter === "High" && (p.apy ?? 0) > 10) ||
-      (apyFilter === "Moderate" && (p.apy ?? 0) >= 2 && (p.apy ?? 0) <= 10) ||
-      (apyFilter === "Low" && (p.apy ?? 0) < 2)
-    const inPrediction =
-      predictionFilter === "Prediction" ||
-      (predictionFilter === "Low" && (p.prediction ?? 0) >= 0 && (p.prediction ?? 0) <= 50) ||
-      (predictionFilter === "Medium" && (p.prediction ?? 0) > 50 && (p.prediction ?? 0) <= 75) ||
-      (predictionFilter === "High" && (p.prediction ?? 0) > 75)
-    const inSigma =
-      sigmaFilter === "Sigma" ||
-      (sigmaFilter === "Low" && (p.sigma ?? 0) < 0.05) ||
-      (sigmaFilter === "Medium" && (p.sigma ?? 0) >= 0.05 && (p.sigma ?? 0) <= 0.15) ||
-      (sigmaFilter === "High" && (p.sigma ?? 0) > 0.15)
-
-    return inCategory && inTVL && inAPY && inPrediction && inSigma
-  })
-
+export function Filters({ filters, categories, onFilterChange, onReset }: FiltersProps) {
   return (
-    <Box>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-        {/* Category */}
-        <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Category">Category</SelectItem>
-            {categories.map((c) => (
-              <SelectItem key={c} value={c}>
-                {c}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+      <CategorySelect 
+        value={filters.category} 
+        categories={categories}
+        onChange={(value) => onFilterChange('category', value)} 
+      />
+      
+      <TVLSelect 
+        value={filters.tvlFilter}
+        onChange={(value) => onFilterChange('tvlFilter', value)} 
+      />
+      
+      <APYSelect 
+        value={filters.apyFilter}
+        onChange={(value) => onFilterChange('apyFilter', value)} 
+      />
+      
+      <PredictionSelect 
+        value={filters.predictionFilter}
+        onChange={(value) => onFilterChange('predictionFilter', value)} 
+      />
+      
+      <SigmaSelect 
+        value={filters.sigmaFilter}
+        onChange={(value) => onFilterChange('sigmaFilter', value)} 
+      />
 
-        {/* TVL */}
-        <Select value={tvlFilter} onValueChange={setTvlFilter}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="TVL" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="TVL">TVL</SelectItem>
-            <SelectItem value="High">High (&gt; $1B)</SelectItem>
-            <SelectItem value="Medium">Medium ($100M – $1B)</SelectItem>
-            <SelectItem value="Low">Low (&lt; $100M)</SelectItem>
-          </SelectContent>
-        </Select>
-
-        {/* APY */}
-        <Select value={apyFilter} onValueChange={setApyFilter}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="APY" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="APY">APY</SelectItem>
-            <SelectItem value="High">High Yield (&gt; 10%)</SelectItem>
-            <SelectItem value="Moderate">Moderate (2–10%)</SelectItem>
-            <SelectItem value="Low">Low (&lt; 2%)</SelectItem>
-          </SelectContent>
-        </Select>
-
-        {/* Prediction */}
-        <Select value={predictionFilter} onValueChange={setPredictionFilter}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Prediction" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Prediction">Prediction</SelectItem>
-            <SelectItem value="Low">0 – 50</SelectItem>
-            <SelectItem value="Medium">50 – 75</SelectItem>
-            <SelectItem value="High">75 – 100</SelectItem>
-          </SelectContent>
-        </Select>
-
-        {/* Sigma */}
-        <Select value={sigmaFilter} onValueChange={setSigmaFilter}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Sigma" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Sigma">Sigma</SelectItem>
-            <SelectItem value="Low">Low (&lt; 0.05)</SelectItem>
-            <SelectItem value="Medium">Medium (0.05 – 0.15)</SelectItem>
-            <SelectItem value="High">High (&gt; 0.15)</SelectItem>
-          </SelectContent>
-        </Select>
-
-        {/* Reset Button aligned right */}
-        <div className="flex justify-end">
-          <Button variant="default" onClick={handleReset} className="w-full sm:w-auto">
-            Reset
-          </Button>
-        </div>
+      <div className="flex justify-end">
+        <Button variant="default" onClick={onReset} className="w-full sm:w-auto">
+          Reset
+        </Button>
       </div>
+    </div>
+  );
+}
 
-      <PoolTable pools={filteredPools} loading={loading} />
-    </Box>
-  )
+function CategorySelect({ value, categories, onChange }: {
+  value: string;
+  categories: readonly string[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className="w-full">
+        <SelectValue placeholder="Category" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="Category">All Categories</SelectItem>
+        {categories.map((category) => (
+          <SelectItem key={category} value={category}>
+            {category}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
+function TVLSelect({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className="w-full">
+        <SelectValue placeholder="TVL" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="TVL">All TVL</SelectItem>
+        <SelectItem value="HIGH">High (&gt; $1B)</SelectItem>
+        <SelectItem value="MEDIUM">Medium ($100M – $1B)</SelectItem>
+        <SelectItem value="LOW">Low (&lt; $100M)</SelectItem>
+      </SelectContent>
+    </Select>
+  );
+}
+
+function APYSelect({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className="w-full">
+        <SelectValue placeholder="APY" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="APY">All APY</SelectItem>
+        <SelectItem value="HIGH">High Yield (&gt; 10%)</SelectItem>
+        <SelectItem value="MODERATE">Moderate (2–10%)</SelectItem>
+        <SelectItem value="LOW">Low (&lt; 2%)</SelectItem>
+      </SelectContent>
+    </Select>
+  );
+}
+
+function PredictionSelect({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className="w-full">
+        <SelectValue placeholder="Prediction" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="Prediction">All Predictions</SelectItem>
+        <SelectItem value="LOW">0 – 50</SelectItem>
+        <SelectItem value="MEDIUM">50 – 75</SelectItem>
+        <SelectItem value="HIGH">75 – 100</SelectItem>
+      </SelectContent>
+    </Select>
+  );
+}
+
+function SigmaSelect({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className="w-full">
+        <SelectValue placeholder="Sigma" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="Sigma">All Sigma</SelectItem>
+        <SelectItem value="LOW">Low (&lt; 0.05)</SelectItem>
+        <SelectItem value="MEDIUM">Medium (0.05 – 0.15)</SelectItem>
+        <SelectItem value="HIGH">High (&gt; 0.15)</SelectItem>
+      </SelectContent>
+    </Select>
+  );
 }
