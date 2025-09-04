@@ -19,6 +19,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import { ChartSkeleton, PoolDetailsSkeleton } from "@/components/skeletons/PoolSkeletons"
 
 interface PoolDetails {
   pool: string
@@ -165,14 +167,16 @@ export default function PoolDetailPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="flex items-center justify-center h-64 text-muted-foreground">
-          Loading pool details...
-        </div>
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex items-center gap-4 mb-6">
+        <Skeleton className="h-8 w-20 rounded-md" />
       </div>
-    )
-  }
 
+      <PoolDetailsSkeleton />
+      <ChartSkeleton />
+    </div>
+  )
+}
   if (error || !poolDetails) {
     return (
       <div className="container mx-auto p-6">
@@ -193,8 +197,8 @@ export default function PoolDetailPage() {
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center gap-4 mb-6">
         <Link href="/">
-          <Button variant="default" size="sm" className="items-center text-white">
-            <ArrowLeft className="mr-2 h-4 w-4" />
+          <Button variant="default" size="sm" className="flex items-center ">
+            <ArrowLeft className="mr-1" />
             Back
           </Button>
         </Link>
@@ -236,7 +240,7 @@ export default function PoolDetailPage() {
               No chart data
             </div>
           ) : (
-            <ChartContainer config={chartConfig}>
+            <ChartContainer config={chartConfig} className="sm:h-[300] xl:max-h-[400] w-full">
               <LineChart data={chartData} margin={{ left: 12, right: 12, top: 12, bottom: 12 }}>
                 <CartesianGrid vertical={false} />
                 <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
@@ -263,9 +267,9 @@ export default function PoolDetailPage() {
                 <Line
                   dataKey="apy"
                   type="monotone"
-                  stroke="var(--color-apy)"
+                  stroke="var(--chart-1)"
                   strokeWidth={2}
-                  dot={{ fill: "var(--color-apy)", strokeWidth: 2, r: 4 }}
+                  dot={{ fill: "var(--chart-1)", strokeWidth: 2, r: 4 }}
                   activeDot={{ r: 6, strokeWidth: 2 }}
                 />
               </LineChart>

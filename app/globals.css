@@ -115,6 +115,12 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+.card-bg{
+  background: conic-gradient(at left, #dfe2fe, #b1cbfa, #8e98f5);
+}
+.dark .card-bg{
+  background: radial-gradient(ellipse at top right, #1b2430, #51557e, #816797);
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;
