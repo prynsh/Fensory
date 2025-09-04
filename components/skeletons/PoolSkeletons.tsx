@@ -1,6 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton"
 import { TableRow, TableCell } from "@/components/ui/table"
-import { Card, CardHeader, CardContent } from "@mui/material"
 
 export function PoolCardSkeleton() {
   return (

@@ -10,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Stack } from "@mui/material"
 import { Button } from "./ui/button"
 
 interface Pool {
@@ -48,25 +47,21 @@ export default function Filters({ categories, pools, loading }: Props) {
 
   const filteredPools = pools.filter((p) => {
     const inCategory = category === "Category" || p.category === category
-
     const inTVL =
       tvlFilter === "TVL" ||
       (tvlFilter === "High" && p.tvlUsd > 1_000_000_000) ||
       (tvlFilter === "Medium" && p.tvlUsd >= 100_000_000 && p.tvlUsd <= 1_000_000_000) ||
       (tvlFilter === "Low" && p.tvlUsd < 100_000_000)
-
     const inAPY =
       apyFilter === "APY" ||
       (apyFilter === "High" && (p.apy ?? 0) > 10) ||
       (apyFilter === "Moderate" && (p.apy ?? 0) >= 2 && (p.apy ?? 0) <= 10) ||
       (apyFilter === "Low" && (p.apy ?? 0) < 2)
-
     const inPrediction =
       predictionFilter === "Prediction" ||
       (predictionFilter === "Low" && (p.prediction ?? 0) >= 0 && (p.prediction ?? 0) <= 50) ||
       (predictionFilter === "Medium" && (p.prediction ?? 0) > 50 && (p.prediction ?? 0) <= 75) ||
       (predictionFilter === "High" && (p.prediction ?? 0) > 75)
-
     const inSigma =
       sigmaFilter === "Sigma" ||
       (sigmaFilter === "Low" && (p.sigma ?? 0) < 0.05) ||
@@ -78,10 +73,10 @@ export default function Filters({ categories, pools, loading }: Props) {
 
   return (
     <Box>
-      <Stack direction="row" spacing={2} alignItems="center" mb={3} flexWrap="wrap">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
         {/* Category */}
         <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-[150px]">
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent>
@@ -96,7 +91,7 @@ export default function Filters({ categories, pools, loading }: Props) {
 
         {/* TVL */}
         <Select value={tvlFilter} onValueChange={setTvlFilter}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="TVL" />
           </SelectTrigger>
           <SelectContent>
@@ -109,7 +104,7 @@ export default function Filters({ categories, pools, loading }: Props) {
 
         {/* APY */}
         <Select value={apyFilter} onValueChange={setApyFilter}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="APY" />
           </SelectTrigger>
           <SelectContent>
@@ -122,7 +117,7 @@ export default function Filters({ categories, pools, loading }: Props) {
 
         {/* Prediction */}
         <Select value={predictionFilter} onValueChange={setPredictionFilter}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="Prediction" />
           </SelectTrigger>
           <SelectContent>
@@ -135,7 +130,7 @@ export default function Filters({ categories, pools, loading }: Props) {
 
         {/* Sigma */}
         <Select value={sigmaFilter} onValueChange={setSigmaFilter}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="Sigma" />
           </SelectTrigger>
           <SelectContent>
@@ -146,11 +141,13 @@ export default function Filters({ categories, pools, loading }: Props) {
           </SelectContent>
         </Select>
 
-        {/* Reset Button (kept MUI, but can switch to Shadcn if you want) */}
-        <Button variant="default" onClick={handleReset}>
-          Reset
-        </Button>
-      </Stack>
+        {/* Reset Button aligned right */}
+        <div className="flex justify-end">
+          <Button variant="default" onClick={handleReset} className="w-full sm:w-auto">
+            Reset
+          </Button>
+        </div>
+      </div>
 
       <PoolTable pools={filteredPools} loading={loading} />
     </Box>
