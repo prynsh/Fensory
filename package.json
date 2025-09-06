@@ -35,6 +35,7 @@
     "@solana/web3.js": "^1.98.4",
     "@tabler/icons-react": "^3.34.1",
     "@tanstack/react-table": "^8.21.3",
+    "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "embla-carousel-autoplay": "^8.6.0",
@@ -63,6 +64,6 @@
     "typescript": "^5"
   },
   "overrides": {
-  "react-is": "^19.0.0-rc-69d4b800-20241021"
-}
+    "react-is": "^19.0.0-rc-69d4b800-20241021"
+  }
 }

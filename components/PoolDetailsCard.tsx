@@ -20,7 +20,7 @@ export function PoolDetailsCard({ poolDetails, trendPercentage }: PoolDetailsCar
     { label: "Symbol", value: poolDetails.symbol },
     { label: "TVL (USD)", value: `$${poolDetails.tvlUsd.toLocaleString()}` },
     { label: "APY", value: formatValue(poolDetails.apy, "%") },
-    { label: "Prediction", value: formatValue(poolDetails.prediction,"-") },
+    { label: "Prediction", value: formatValue(poolDetails.prediction,"%") },
     { label: "Sigma", value: formatValue(poolDetails.sigma, "%") },
     { label: "30d APY Mean", value: formatValue(poolDetails.apyMean30d, "%") },
     { label: "Trend (12m)", value: `${trendPercentage.toFixed(2)}%` },
